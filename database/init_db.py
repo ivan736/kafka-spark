@@ -1,5 +1,4 @@
 import os
-import time
 
 from dotenv import load_dotenv, find_dotenv
 from pymysql import connect

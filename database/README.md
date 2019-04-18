@@ -1,44 +1,49 @@
-# Run a mysql server in docekr
+# Run a mysql server in docker
 
 ## Start mysql server
 
-```bash
-export MYSQL_CONTAINER_NAME=mysql-dev
-export ROOT_PASSWORD=1234
-export MYSQL_IMAGE=mysql:8
+### Option 1: with script
 
-docker run --name $MYSQL_CONTAINER_NAME -e MYSQL_ROOT_PASSWORD=$ROOT_PASSWORD -d -p 3306:3306 $MYSQL_IMAGE
+* execute [create_env.sh](create_env.sh)
+    * `./create_env.sh`
 
-export MYSQL_SERVER_HOST=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' mysql-dev)
-```
+### Option 2:
 
-## Manually grant privileges for remote accessing 
+* This section describes the required steps to set up a mysql
 
-* Access container:
+* exports environment variables
 
     ```bash
-    docker exec -it $MYSQL_CONTAINER_NAME bash
+    export MYSQL_CONTAINER_NAME=mysql-dev
+    export ROOT_PASSWORD=1234
+    export MYSQL_IMAGE=mysql:8
+
+    docker run --name $MYSQL_CONTAINER_NAME -e MYSQL_ROOT_PASSWORD=$ROOT_PASSWORD -d -p 3306:3306 $MYSQL_IMAGE
+
+    export MYSQL_SERVER_HOST=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' mysql-dev)
     ```
 
-* In container:  
-  * `$ mysql -p`
-  * grant privileges
+* manually grant privileges for remote accessing
+    * Access container:
 
-    ```sql
-    GRANT ALL PRIVILEGES ON *.* TO 'root'@'%';
-    FLUSH PRIVILEGES;
-    EXIT
-    ```
+        ```bash
+        docker exec -it $MYSQL_CONTAINER_NAME bash
+        ```
 
-    * Noted: create a new user for remote accesing is better.
+    * In container:
+      * `$ mysql -p`
+      * grant privileges
+
+        ```sql
+        GRANT ALL PRIVILEGES ON *.* TO 'root'@'%';
+        FLUSH PRIVILEGES;
+        EXIT
+        ```
+
+        * Noted: create a new user for remote accesing is better.
 
 * Test remote accessing
-`docker run -it --network bridge --rm $MYSQL_IMAGE --host=$MYSQL_SERVER_HOST --user=root  --password=$ROOT_PASSWORD`
-
- --password=1234
-
-
-docker run -p 3306:3306  --name mysql-dev -e MYSQL_ROOT_PASSWORD=1234 -d $MYSQL_IMAGE
+`docker run -it --rm $MYSQL_IMAGE --host=$MYSQL_SERVER_HOST --user=root  --password=$ROOT_PASSWORD`
 
 
 # grant privileges for remote accessing

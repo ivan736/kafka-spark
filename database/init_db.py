@@ -38,14 +38,6 @@ def create_table(csr):
     csr.execute(create_account)
 
 
-def insert(cursor):
-    a = """INSERT INTO user (name) VALUES ("qwe");"""
-    b = """INSERT INTO account (User_ID, Balance) VALUES (1, 100);"""
-
-    cursor.execute(a)
-    cursor.execute(b)
-
-
 if __name__ == "__main__":
     ctx = connect(user=USER, password=PASSWORD)
     cursor = ctx.cursor()
@@ -54,6 +46,5 @@ if __name__ == "__main__":
     use_databse(cursor)
 
     create_table(cursor)
-    insert(cursor)
 
     ctx.commit()
